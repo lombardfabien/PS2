@@ -115,11 +115,13 @@ class Digraph(object):
         outdoor_distance =  edge.get_outdoor_distance()
         print (self.nodes)
         print (self.edges)
-        if src not in self.nodes:
-            print("add a node if not in the list")
-            self.add_node(src)
+        print (src , dest)
+        if not (src in self.edges and dest in self.edges):
+            print ("ERROR")
+            raise ValueError("Node not in the graph")
+            #self.add_node(src)
         else:
-            print("try to add edge")
+#            print("try to add edge")
             self.edges[src].append(dest)
             #print ("List of Node:", nodes._dict__)
             print ("result on add_edge:" , self.edges)
@@ -146,9 +148,9 @@ class TestGraph(unittest.TestCase):
 #        print (self.e1.__dict__)
         self.g.add_edge(self.e1)
         self.g.add_edge(self.e2)
-        self.g.add_edge(self.e3)
-#        for node in g:
-#            print ("print g graph", node , g.edges(node))
+        self.g.add_edge(self.e3)#
+#        for node in self.g:
+#            print ("print g graph", node ,self.g.edges[node])
 
 
     def test_weighted_edge_str(self):
@@ -186,12 +188,11 @@ class TestGraph(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    na = Node("a")
-    nb = Node("b")
-    e = Edge (na,nb)
-    test = WeightedEdge (e.get_source(), e.get_destination(), 10, 6)
-    test1 = Edge("a", "b")
-    print (na.__dict__)
-    print (test.__dict__)
-    print (test1)
+#    nb = Node("b")
+#    e = Edge (na,nb)
+#    test = WeightedEdge (e.get_source(), e.get_destination(), 10, 6)
+#    test1 = Edge("a", "b")
+#    print (na.__dict__)
+#    print (test.__dict__)
+#    print (test1)
     unittest.main()
