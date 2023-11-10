@@ -114,12 +114,12 @@ class Digraph(object):
         total_dist = edge.get_total_distance()
         outdoor_dist =  edge.get_outdoor_distance()
         edge_dist = (src,dest,total_dist,outdoor_dist)
-        print (self.nodes)
-        print (self.edges)
-        print (src,dest)
+#        print (self.nodes)
+#        print (self.edges)
+#        print (src,dest)
         #check if src and dest in edge does not exist
         if not (src in self.edges and dest in self.edges):
-            print ("ERROR")
+#            print ("ERROR")
             raise ValueError("Node not in the graph")
         #if src exist then add edge to he node.
         else:

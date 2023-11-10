@@ -20,7 +20,8 @@ from graph import Digraph, Node, WeightedEdge
 # represented?
 #
 # Answer:
-#
+#nodes will be each building. edges will be the distance between each node.
+# for each edge a list is attached with the inddor and outdoor distance.
 
 
 # Problem 2b: Implementing load_map
@@ -42,8 +43,29 @@ def load_map(map_filename):
     Returns:
         a Digraph representing the map
     """
-
+    m = open(map_filename,"r")
+    map =[]
+    for items in m:
+        map.append(m.readline())
+#        print(map)
+    edge = [] #list to include map information (Src, dest, total_distance, outdoor_distance)
+    list = []
+    num = str()
     # TODO
+    for items in map:
+        x = items.split()
+        list.append(x)
+        #if items == " ":
+        #    edge.append(num)
+        #    num = str()
+        #elif items == "\n":
+        #    print (list)
+        #    list.append(edge)
+        #    edge.clear()
+        #else:
+        #    num = num + str(items)
+        #list.append(edge)
+    print (list)
     print("Loading map from file...")
 
 # Problem 2c: Testing load_map
@@ -217,4 +239,5 @@ class Ps2Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    load_map("mit_map.txt")
+    #unittest.main()
