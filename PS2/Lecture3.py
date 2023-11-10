@@ -42,6 +42,7 @@ class Digraph(object):
         if not (src in self.edges and dest in self.edges):
             raise ValueError('Node not in graph')
         self.edges[src].append(dest)
+#        print (self.edges[src.getName()])
     def childrenOf(self, node):
         return self.edges[node]
     def hasNode(self, node):

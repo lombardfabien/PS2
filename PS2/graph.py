@@ -112,19 +112,23 @@ class Digraph(object):
         src = edge.get_source()
         dest = edge.get_destination()
         total_dist = edge.get_total_distance()
-        outdoor_distance =  edge.get_outdoor_distance()
+        outdoor_dist =  edge.get_outdoor_distance()
+        edge_dist = (src,dest,total_dist,outdoor_dist)
         print (self.nodes)
         print (self.edges)
-        print (src , dest)
+        print (src,dest)
+        #check if src and dest in edge does not exist
         if not (src in self.edges and dest in self.edges):
             print ("ERROR")
             raise ValueError("Node not in the graph")
-            #self.add_node(src)
+        #if src exist then add edge to he node.
         else:
 #            print("try to add edge")
-            self.edges[src].append(dest)
+            temp = edge.__str__()
+            self.edges[src].append(temp)
+#            print ("look at current edge", self.edges[src])
             #print ("List of Node:", nodes._dict__)
-            print ("result on add_edge:" , self.edges)
+#            print ("result on add_edge:" , self.edges)
 
 
 
@@ -154,9 +158,9 @@ class TestGraph(unittest.TestCase):
 
 
     def test_weighted_edge_str(self):
-        self.assertEqual(str(self.e1), "a->b (15, 10)")
-        self.assertEqual(str(self.e2), "a->c (14, 6)")
-        self.assertEqual(str(self.e3), "b->c (3, 1)")
+        self.assertEqual(str(self.e1), "a->b (15,10)")
+        self.assertEqual(str(self.e2), "a->c (14,6)")
+        self.assertEqual(str(self.e3), "b->c (3,1)")
 
     def test_weighted_edge_total_distance(self):
         self.assertEqual(self.e1.get_total_distance(), 15)
@@ -183,7 +187,7 @@ class TestGraph(unittest.TestCase):
             self.g.add_node(self.na)
 
     def test_graph_str(self):
-        expected = "a->b (15, 10)\na->c (14, 6)\nb->c (3, 1)"
+        expected = "a->b (15,10)\na->c (14,6)\nb->c (3,1)"
         self.assertEqual(str(self.g), expected)
 
 
