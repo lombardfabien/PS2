@@ -65,8 +65,26 @@ def load_map(map_filename):
         #else:
         #    num = num + str(items)
         #list.append(edge)
+    list.pop(-1)
     print (list)
     print("Loading map from file...")
+    g=Digraph()
+    for item in list:
+        i=0
+        while i < 2:
+            try:
+                g.add_node(item[i])
+                i +=1
+            except ValueError as ve:
+                #print("error")
+                i+=1
+                continue
+    for item in list:
+        print(item)
+        g.add_edge(WeightedEdge(item[0], item[1], item[2], item[3]))
+        #WeightedEdge.__str__
+    print(g)
+
 
 # Problem 2c: Testing load_map
 # Include the lines used to test load_map below, but comment them out
