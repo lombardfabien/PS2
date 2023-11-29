@@ -124,7 +124,8 @@ class Digraph(object):
         #if src exist then add edge to he node.
         else:
 #            print("try to add edge")
-            temp = edge.__str__()
+#            temp = edge.__str__()
+            temp = edge_dist
             self.edges[src].append(temp)
 #            print ("look at current edge", self.edges[src])
             #print ("List of Node:", nodes._dict__)

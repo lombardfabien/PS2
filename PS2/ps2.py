@@ -66,7 +66,7 @@ def load_map(map_filename):
         #    num = num + str(items)
         #list.append(edge)
     list.pop(-1)
-    print (list)
+#    print (list)
     print("Loading map from file...")
     g=Digraph()
     for item in list:
@@ -80,10 +80,11 @@ def load_map(map_filename):
                 i+=1
                 continue
     for item in list:
-        print(item)
+#        print(item)
         g.add_edge(WeightedEdge(item[0], item[1], item[2], item[3]))
         #WeightedEdge.__str__
-    print(g)
+#    print(g)
+    return g
 
 
 # Problem 2c: Testing load_map
@@ -136,7 +137,41 @@ def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
         max_dist_outdoors constraints, then return None.
     """
     # TODO
-    pass
+#    print (digraph)
+#    print (digraph.nodes)
+#    short_path = []
+#    best_path == None
+    if not (digraph.has_node(start) and digraph.has_node(end)) :
+        raise ValueError("Node does not exist")
+    elif start == end:
+        print (" start and end node are the same node")
+        return path
+    else:
+
+#        print ("let's start")
+        path = path + [start]
+#        print(path)
+        for item in digraph.get_edges_for_node(start):
+#            print (item)
+            if item[1] == end:
+                path = path + [end]
+                # update bestpath if the current path is shorter
+                #print("end of the path", path, best_path)
+                if len(path) < len(best_path) or not best_path:
+                    #print ("THAT IS THE PATH")
+                    best_path = path.copy()
+                    ##print ("best path is", best_path)
+            elif item [1] not in path:
+#                if len(path) < len(short_path) or short_path == None:
+                    new_path = get_best_path(digraph, item[1], end, path.copy(), 0, 0, best_path)
+                    if new_path:
+                #update best_path if a shorer path is found
+                        if len(new_path) < len(best_path) or not best_path:
+                            #print("load new path in best path" , new_path)
+                            best_path = new_path
+
+    return best_path
+
 
 
 # Problem 3c: Implement directed_dfs
@@ -257,5 +292,8 @@ class Ps2Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    load_map("mit_map.txt")
+    g = load_map("mit_map.txt")
+    print (g)
+    p = get_best_path(g,'1','32',[],'10','9',[])
+    print ("the path is:", p)
     #unittest.main()
