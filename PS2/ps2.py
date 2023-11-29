@@ -147,28 +147,37 @@ def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
         print (" start and end node are the same node")
         return path
     else:
-
+        path_nodes, path_dist, path_out = path
 #        print ("let's start")
-        path = path + [start]
-#        print(path)
+        path_nodes = path_nodes + [start]
         for item in digraph.get_edges_for_node(start):
-#            print (item)
             if item[1] == end:
-                path = path + [end]
+                path_nodes = path_nodes + [item[1]]
+                path_dist = path_dist + int(item[2])
+                print(path_nodes , path_dist)
+                print (path)
+                print (best_path)
+                #total_dist = total_dist + item[2]
+                #outdoor_dist = outdoor_dist + item[3]
                 # update bestpath if the current path is shorter
                 #print("end of the path", path, best_path)
-                if len(path) < len(best_path) or not best_path:
+                if len(path[0]) < len(best_path[0]) or not best_path[0]:
                     #print ("THAT IS THE PATH")
-                    best_path = path.copy()
-                    ##print ("best path is", best_path)
-            elif item [1] not in path:
+                    best_path = (path_nodes.copy(),path_dist, path_out) #+ [total_dist] + [outdoor_dist]
+                    path_dist =0
+                    print ("best path is", best_path)
+            elif item [1] not in path_nodes:
 #                if len(path) < len(short_path) or short_path == None:
-                    new_path = get_best_path(digraph, item[1], end, path.copy(), 0, 0, best_path)
+                    new_path = get_best_path(digraph, item[1], end, (path_nodes.copy(), path_dist+ int(item[2]),path_out+int(item[3])), 0, 0, best_path)
+#                    print(new_path)
                     if new_path:
+                        print("new path", new_path, path_nodes)
+                        print ("best path", best_path)
                 #update best_path if a shorer path is found
-                        if len(new_path) < len(best_path) or not best_path:
+                        if len(new_path[0]) < len(best_path[0]) or not best_path[0]:
                             #print("load new path in best path" , new_path)
                             best_path = new_path
+                        #    path_dist =0
 
     return best_path
 
@@ -294,6 +303,6 @@ class Ps2Test(unittest.TestCase):
 if __name__ == "__main__":
     g = load_map("mit_map.txt")
     print (g)
-    p = get_best_path(g,'1','32',[],'10','9',[])
+    p = get_best_path(g,'1','6',([],0,0),'10','9',([],0,0))
     print ("the path is:", p)
     #unittest.main()
