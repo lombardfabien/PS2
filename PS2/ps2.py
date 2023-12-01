@@ -43,16 +43,22 @@ def load_map(map_filename):
     Returns:
         a Digraph representing the map
     """
-    m = open(map_filename,"r")
-    map =[]
+    m = open(map_filename)
+#    print (m.read())
+    map = []
+    count =0
     for items in m:
-        map.append(m.readline())
-#        print(map)
+#        print (items)
+        map.append(items)
+        count +=1
+        #print(map)
     edge = [] #list to include map information (Src, dest, total_distance, outdoor_distance)
     list = []
     num = str()
+
     # TODO
     for items in map:
+
         x = items.split()
         list.append(x)
         #if items == " ":
@@ -65,8 +71,8 @@ def load_map(map_filename):
         #else:
         #    num = num + str(items)
         #list.append(edge)
-    list.pop(-1)
 #    print (list)
+#    print (count)
     print("Loading map from file...")
     g=Digraph()
     for item in list:
@@ -143,6 +149,8 @@ def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
 #    best_path == None
     if not (digraph.has_node(start) and digraph.has_node(end)) :
         raise ValueError("Node does not exist")
+#    elif not max_dist_outdoors or best_dist:
+#        raise ValueError("need outdoor and total distances")
     elif start == end:
         print (" start and end node are the same node")
         return path
@@ -151,34 +159,48 @@ def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
 #        print ("let's start")
         path_nodes = path_nodes + [start]
         for item in digraph.get_edges_for_node(start):
+#            print (item[1])
             if item[1] == end:
+#                print (item[1], end)
                 path_nodes = path_nodes + [item[1]]
                 path_dist = path_dist + int(item[2])
-                print(path_nodes , path_dist)
-                print (path)
-                print (best_path)
+                path_out = path_out + int(item[3])
+#               if path_out == 0:
+#                print(path_nodes , path_dist, path_out)
+#                print (path)
+#                print (best_path)
                 #total_dist = total_dist + item[2]
                 #outdoor_dist = outdoor_dist + item[3]
                 # update bestpath if the current path is shorter
                 #print("end of the path", path, best_path)
-                if len(path[0]) < len(best_path[0]) or not best_path[0]:
+                if len(path_nodes) <= len(best_path[0]) or not best_path[0]:
                     #print ("THAT IS THE PATH")
-                    best_path = (path_nodes.copy(),path_dist, path_out) #+ [total_dist] + [outdoor_dist]
-                    path_dist =0
-                    print ("best path is", best_path)
+#                    best_path = (path_nodes.copy(),path_dist, path_out)
+#                    print (path_dist, best_dist, path_out, max_dist_outdoors)
+                    if path_dist <= best_dist and path_out <= max_dist_outdoors:
+#                        print (len(path[0]),len(best_path[0]),path_dist, best_dist, path_out, max_dist_outdoors)
+#                        print (path_nodes, path[0], best_path)
+                        best_path = (path_nodes.copy(),path_dist, path_out) #+ [total_dist] + [outdoor_dist]
+#                        path_dist =0
+#                        print ("shortest path is", best_path)
+                        return best_path
+                if path_out <= max_dist_outdoors:
+                         indoor_path = (path_nodes.copy(),path_dist, path_out)
+#                        print (indoor_path)
+#                        print("path without ourdoor walking", best_path, max_dist_outdoors)
+#                        best_path = ([None], 0 , 0)
+
             elif item [1] not in path_nodes:
 #                if len(path) < len(short_path) or short_path == None:
-                    new_path = get_best_path(digraph, item[1], end, (path_nodes.copy(), path_dist+ int(item[2]),path_out+int(item[3])), 0, 0, best_path)
+                    new_path = get_best_path(digraph, item[1], end, (path_nodes.copy(), path_dist+ int(item[2]),path_out+int(item[3])), max_dist_outdoors, best_dist, best_path)
 #                    print(new_path)
                     if new_path:
-                        print("new path", new_path, path_nodes)
-                        print ("best path", best_path)
+#                        print("new path", new_path, path_nodes)
+#                        print ("best path", best_path)
                 #update best_path if a shorer path is found
-                        if len(new_path[0]) < len(best_path[0]) or not best_path[0]:
+                        if len(new_path[0]) <= len(best_path[0]) or not best_path[0]:
                             #print("load new path in best path" , new_path)
                             best_path = new_path
-                        #    path_dist =0
-
     return best_path
 
 
@@ -212,7 +234,16 @@ def directed_dfs(digraph, start, end, max_total_dist, max_dist_outdoors):
         If there exists no path that satisfies max_total_dist and
         max_dist_outdoors constraints, then raises a ValueError.
     """
-    # TODO
+    p = get_best_path(digraph,start,end,([],0,0),max_dist_outdoors, max_total_dist,([],0,0))
+#    print (len(p[0]))
+    if len(p[0])==0:
+        raise ValueError("no path available")
+    elif p[1]> max_total_dist:
+        raise ValueError("path too long")
+#    elsif max_dist_outdoors ==0:
+#        return p
+    else:
+        return p[0]
     pass
 
 
@@ -290,7 +321,7 @@ class Ps2Test(unittest.TestCase):
 
     def test_path_multi_step_no_outdoors2(self):
         self._test_path(
-            expectedPath=['1', '3', '10', '4', '12', '24', '34', '36', '32'],
+            expectedPath=['1', '3', '10', '4', '12', '24', '34', '36','32'],
             outdoor_dist=0)
 
     def test_impossible_path1(self):
@@ -301,8 +332,9 @@ class Ps2Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    g = load_map("mit_map.txt")
-    print (g)
-    p = get_best_path(g,'1','6',([],0,0),'10','9',([],0,0))
-    print ("the path is:", p)
-    #unittest.main()
+#     g = load_map("mit_map.txt")
+#     print (g)
+#    p = get_best_path(g,'8','50',([],0,0),0,200,([],0,0))
+#    print ("the path is:", p)
+#     print(directed_dfs(g,'1','32',9999,0))
+     unittest.main()
